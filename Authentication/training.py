@@ -3,6 +3,7 @@ import os
 from model import make_siamese_model
 from tensorflow.keras.metrics import Precision, Recall
 import numpy as np
+from data_preprocessing import train_data
 
 #create the network
 siamese_model = make_siamese_model()
@@ -48,7 +49,6 @@ def train_step(batch):
         
         #calculate loss
         loss = binary_cross_loss(y, y_prime) #passing in true and predicted value to find loss
-    print(loss)
 
     #calculate gradients
     grad = tape.gradient(loss, siamese_model.trainable_variables) #grabs loss and all gradiants with loss in terms of all trainable variables from tape
@@ -75,14 +75,21 @@ def train(data, EPOCHS):
         for idx, batch in enumerate(data):
 
             #running training step here
-            loss = train_step(batch)
+            loss = train_step(batch) #returns loss
             y_prime = siamese_model.predict(batch[:2])
+
             r.update_state(batch[2], y_prime)
             p.update_state(batch[2], y_prime)
-            progbar.update(idx+1)
+
+            progbar.update(idx+1, [("loss", loss)])
+
         print(loss.numpy(), r.result().numpy(), p.result().numpy())
         
         #saving a checkpoint every 10 epochs
         if epoch % 10 == 0:
             checkpoint.save(file_prefix=checkpoint_prefix)
 
+
+#Run model training
+EPOCHS = 20
+train(train_data, EPOCHS)
