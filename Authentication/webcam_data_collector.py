@@ -16,7 +16,7 @@ new_images = []
 os.path.join(ANC_PATH, '{}.jpg'.format(uuid.uuid1()))
 
 #opening a connection to the webcam
-cap = cv2.VideoCapture(4)
+cap = cv2.VideoCapture(0)
 while cap.isOpened(): 
     ret, frame = cap.read()
    
