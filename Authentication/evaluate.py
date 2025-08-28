@@ -21,9 +21,16 @@ else:
 # gets a batch of testing data input, validation data, labels
 test_input, test_val, y_true = test_data.as_numpy_iterator().next()
 
-# making predictions for this batch
-y_pred_probs = siamese_model.predict([test_input, test_val])
-y_pred_binary = (y_pred_probs > 0.5).astype(int)
+#making predictions for this batch
+y_pred = siamese_model.predict([test_input, test_val])
+
+# DEBUG: print raw predictions vs labels
+print("\n=== Sample predictions vs labels (first 20) ===")
+for i in range(min(20, len(y_pred))):
+    print(f"Prediction: {y_pred[i][0]:.4f} | Thresholded: {1 if y_pred[i][0] > 0.5 else 0} | True: {int(y_true[i])}")
+
+#adding a threshold 
+y_pred_binary = (y_pred > 0.5).astype(int)
 
 # visualize results for each item in the batch
 for i in range(len(test_input)):
@@ -54,8 +61,8 @@ p = Precision()
 
 # looping through testing dataset
 for test_input, test_val, y_true in test_data.as_numpy_iterator():
-    y_predict = siamese_model.predict([test_input, test_val])
-    y_binary = (y_predict > 0.5).astype(int)
+    y_pred = siamese_model.predict([test_input, test_val])
+    y_binary = (y_pred > 0.5).astype(int)
     r.update_state(y_true, y_binary)
     p.update_state(y_true, y_binary)
 

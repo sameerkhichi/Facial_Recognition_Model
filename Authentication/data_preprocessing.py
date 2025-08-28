@@ -24,7 +24,7 @@ def preprocess(file_path):
 
 #creating the labelled dataset - positive for 1 and negative for 0 (tuples or twins)
 positives = tf.data.Dataset.zip((anchor, positive, tf.data.Dataset.from_tensor_slices(tf.ones(len(anchor)))))
-negatives = tf.data.Dataset.zip((anchor, negative, tf.data.Dataset.from_tensor_slices(tf.ones(len(anchor)))))
+negatives = tf.data.Dataset.zip((anchor, negative, tf.data.Dataset.from_tensor_slices(tf.zeros(len(anchor))))) #my genius self put this as ones first fml
 data = positives.concatenate(negatives) #joining positives and negatives together
 
 #The build and train partition

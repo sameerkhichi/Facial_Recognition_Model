@@ -85,11 +85,11 @@ def train(data, EPOCHS):
 
         print(loss.numpy(), r.result().numpy(), p.result().numpy())
         
-        #saving a checkpoint every 10 epochs
-        if epoch % 10 == 0:
+        #saving a checkpoint every 5 epochs
+        if epoch % 5 == 0:
             checkpoint.save(file_prefix=checkpoint_prefix)
 
 
 #Run model training
-EPOCHS = 50
+EPOCHS = 20
 train(train_data, EPOCHS)
