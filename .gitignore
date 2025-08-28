@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# TensorFlow / Keras checkpoints & weights
+training_checkpoints/
+*.ckpt
+*.h5
+*.pb
+
+# Logs
+*.log
+logs/
+events.out.tfevents.*
+
+# OS / Editor specific files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python packaging
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Other cache
+.cache/

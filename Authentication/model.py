@@ -58,7 +58,7 @@ def make_embedding():
     f1 = Flatten()(c4) #flattening the elements - single dimension rather than 6x6x256
     d1 = Dense(4096, activation='sigmoid')(f1) #feature vector with sigmoid activation
 
-    return Model(inputs=[inp], outputs=[d1], name='embedding')
+    return Model(inputs=inp, outputs=d1, name='embedding') #make sure tensors are passed through not lists
 
 def make_siamese_model():
 

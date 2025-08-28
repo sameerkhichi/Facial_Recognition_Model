@@ -76,7 +76,7 @@ def train(data, EPOCHS):
 
             #running training step here
             loss = train_step(batch) #returns loss
-            y_prime = siamese_model.predict(batch[:2])
+            y_prime = siamese_model(batch[:2], training=False)
 
             r.update_state(batch[2], y_prime)
             p.update_state(batch[2], y_prime)
@@ -91,5 +91,5 @@ def train(data, EPOCHS):
 
 
 #Run model training
-EPOCHS = 20
+EPOCHS = 50
 train(train_data, EPOCHS)
