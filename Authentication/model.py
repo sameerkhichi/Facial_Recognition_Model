@@ -1,6 +1,5 @@
 #Researched paper used: https://www.cs.cmu.edu/~rsalakhu/papers/oneshot1.pdf
 
-import cv2
 import os
 import random
 import numpy as np
