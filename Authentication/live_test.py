@@ -56,7 +56,7 @@ while cap.isOpened():
         cv2.imwrite(os.path.join('live_test_data', 'input_image', 'input_image.jpg'), frame)
 
         #run verification
-        results, verified, verification = verify(siamese_model, 0.7, 0.7) #both thresholds of 0.5 - passing in the model
+        results, verified, verification = verify(siamese_model, 0.7, 0.5) #both thresholds of 0.5 - passing in the model
         
         #update overlay text with result
         if verified:
