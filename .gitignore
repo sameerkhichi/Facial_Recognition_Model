@@ -37,3 +37,6 @@ build/
 
 # Other cache
 .cache/
+
+#extra
+Authentication/live_test_data/input_image/*
