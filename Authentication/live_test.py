@@ -60,9 +60,9 @@ while cap.isOpened():
         
         #update overlay text with result
         if verified:
-            overlay_text = f"✅ Verified ({verification*100:.2f}%)"
+            overlay_text = f"Verified ({verification*100:.2f}%)"
         else:
-            overlay_text = f"❌ Not Verified ({verification*100:.2f}%)"
+            overlay_text = f"Not Verified ({verification*100:.2f}%)"
 
     #q to quit and close
     if cv2.waitKey(10) & 0xFF == ord('q'):
