@@ -22,7 +22,6 @@ mdurl==0.1.2
 ml_dtypes==0.5.3
 namex==0.1.0
 numpy==2.2.6
-nvidia-pyindex==1.0.9
 opencv-python==4.12.0.88
 opt_einsum==3.4.0
 optree==0.17.0
