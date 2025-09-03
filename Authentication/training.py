@@ -91,5 +91,5 @@ def train(data, EPOCHS):
 
 
 #Run model training
-EPOCHS = 20
+EPOCHS = 141
 train(train_data, EPOCHS)

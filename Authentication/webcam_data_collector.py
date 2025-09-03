@@ -8,6 +8,7 @@ import tensorflow as tf
 
 POS_PATH = os.path.join('data', 'positive')
 ANC_PATH = os.path.join('data', 'anchor')
+NEG_PATH = os.path.join('data', 'negative')
 
 #this will fill up quickly with larger sets of data so dont exceed it by too much
 new_images = []
@@ -36,6 +37,13 @@ while cap.isOpened():
         #Create the unique file path 
         imgname = os.path.join(POS_PATH, '{}.jpg'.format(uuid.uuid1()))
         #Write out positive image
+        cv2.imwrite(imgname, frame)
+        new_images.append(imgname)
+    
+    #collect negatives
+    if cv2.waitKey(1) & 0XFF == ord('n'):
+        imgname = os.path.join(NEG_PATH, '{}.jpg'.format(uuid.uuid1()))
+        #write out negative image
         cv2.imwrite(imgname, frame)
         new_images.append(imgname)
     

@@ -57,7 +57,7 @@ while cap.isOpened():
         cv2.imwrite(os.path.join('live_test_data', 'input_image', 'input_image.jpg'), frame)
 
         #run verification
-        results, verified, verification = verify(siamese_model, 0.5, 0.0125) #both thresholds - passing in the model
+        results, verified, verification = verify(siamese_model, 0.8, 0.6) #both thresholds - passing in the model
 
     #q to quit and close
     if cv2.waitKey(10) & 0xFF == ord('q'):

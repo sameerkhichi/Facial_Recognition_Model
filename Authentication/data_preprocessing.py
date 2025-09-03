@@ -8,9 +8,9 @@ NEG_PATH = os.path.join('data', 'negative')
 ANC_PATH = os.path.join('data', 'anchor')
 
 #grab images from respective directories
-anchor = tf.data.Dataset.list_files(ANC_PATH+'\*.jpg').take(300)
-positive = tf.data.Dataset.list_files(POS_PATH+'\*.jpg').take(300)
-negative = tf.data.Dataset.list_files(NEG_PATH+'\*.jpg').take(300)
+anchor = tf.data.Dataset.list_files(ANC_PATH+'\*.jpg').take(1200)
+positive = tf.data.Dataset.list_files(POS_PATH+'\*.jpg').take(1200)
+negative = tf.data.Dataset.list_files(NEG_PATH+'\*.jpg').take(1200)
 
 #file path taken from directories above
 def preprocess(file_path):
