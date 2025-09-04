@@ -77,12 +77,12 @@ def verify():
                                     np.expand_dims(verification_img, axis=0)])
             results.append(result)
 
-        score = np.mean(results)  # average similarity for that user
+        score = np.mean(results)  #average similarity for that user
         if score > best_score:
             best_score = score
             best_user = user
 
-    threshold = 0.5  # adjust as needed
+    threshold = 0.5  #adjust as needed
     if best_score > threshold:
         messagebox.showinfo("Result", f"Verified as {best_user} ({best_score*100:.2f}% match)")
     else:
