@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 import tensorflow as tf
 import numpy as np
 from model import L1Dist
+from data_preprocessing import preprocess
 
 # Load Siamese model
 model = tf.keras.models.load_model(
@@ -19,32 +20,37 @@ os.makedirs(verification_dir, exist_ok=True)
 #Global webcam
 cap = cv2.VideoCapture(0)
 current_frame = None
-
-def preprocess(img_path):
-    img = cv2.imread(img_path)
-    img = cv2.resize(img, (100, 100))
-    img = img / 255.0
-    return img
+showing_feed = False #tracking if feed should be shown
 
 def show_frame():
+    """ Continuously updates webcam feed ONLY if active """
     global current_frame
-    ret, frame = cap.read()
-    if ret:
-        current_frame = frame
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img = Image.fromarray(frame_rgb)
-        imgtk = ImageTk.PhotoImage(image=img)
-        video_label.imgtk = imgtk
-        video_label.configure(image=imgtk)
+    if showing_feed:
+        ret, frame = cap.read()
+        if ret:
+            current_frame = frame
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            img = Image.fromarray(frame_rgb)
+            img = img.resize((100, 100))  # Display feed at 100x100
+            imgtk = ImageTk.PhotoImage(image=img)
+            video_label.imgtk = imgtk
+            video_label.configure(image=imgtk)
+    else:
+        video_label.configure(image="", text="")  # Clear feed when not in use
     video_label.after(10, show_frame)
-
 def capture_image(path):
     if current_frame is not None:
         cv2.imwrite(path, current_frame)
 
 def add_user():
+
+    global showing_feed
+    showing_feed = True #enable webcam
+
+
     name = simpledialog.askstring("Input", "Enter user name:")
     if not name:
+        showing_feed = False
         return
 
     user_dir = os.path.join(verification_dir, name)
@@ -76,6 +82,7 @@ def add_user():
                 root.unbind("<Key>")
                 instruction_label.config(text="Done capturing images")
                 messagebox.showinfo("Success", f"Captured {count*7} images for {name}")
+                showing_feed = False
 
     step = 0
     count = 0
@@ -83,6 +90,11 @@ def add_user():
     root.bind("<Key>", key_handler)
 
 def verify():
+
+    global showing_feed
+    showing_feed = True
+
+
     input_path = "app_data/input_image/input.jpg"
     os.makedirs(os.path.dirname(input_path), exist_ok=True)
     capture_image(input_path)
@@ -105,6 +117,7 @@ def verify():
             best_score = score
             best_user = user
 
+    showing_feed = False
     threshold = 0.5
     if best_score > threshold:
         messagebox.showinfo("Result", f"Verified as {best_user} ({best_score*100:.2f}% match)")
