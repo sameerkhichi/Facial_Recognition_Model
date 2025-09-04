@@ -22,7 +22,7 @@ def verify(model, detection_threshold, verification_threshold):
         validation_img = preprocess(os.path.join('live_test_data', 'verification_images', image))
 
         #make predictions
-        result = model.predict(list(np.expand_dims([input_img, validation_img], axis=1)))
+        result = model.predict([np.expand_dims(input_img, axis=0), np.expand_dims(validation_img, axis=0)])
         results.append(result)
 
     #detection threshold: a metric to determine if a prediction is considered positive
@@ -47,6 +47,7 @@ cap = cv2.VideoCapture(0)
 while cap.isOpened():
     ret, frame = cap.read()
     frame = frame[120:120+250,200:200+250, :] #cut down frame to 250x250 pixels
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     cv2.imshow('Verification', frame)
 
