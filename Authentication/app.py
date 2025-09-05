@@ -1,4 +1,5 @@
 import cv2
+import sys
 import os
 import tkinter as tk
 from tkinter import simpledialog, messagebox
@@ -8,9 +9,19 @@ import numpy as np
 from model import L1Dist
 from data_preprocessing import preprocess
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller stores data files in a temp folder _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
 # Load Siamese model
+model_path = resource_path("siamesemodelv2.h5")
 model = tf.keras.models.load_model(
-    "siamesemodelv2.h5",
+    model_path,
     custom_objects={"L1Dist": L1Dist, "BinaryCrossentropy": tf.losses.BinaryCrossentropy}
 )
 
