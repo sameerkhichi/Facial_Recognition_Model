@@ -20,7 +20,7 @@ os.makedirs(verification_dir, exist_ok=True)
 #Global webcam
 cap = cv2.VideoCapture(0)
 current_frame = None
-showing_feed = False #tracking if feed should be shown
+showing_feed = True #tracking if feed should be shown
 
 def show_frame():
     """ Continuously updates webcam feed ONLY if active """
@@ -38,19 +38,19 @@ def show_frame():
     else:
         video_label.configure(image="", text="")  # Clear feed when not in use
     video_label.after(10, show_frame)
+
+def toggle_feed():
+    global showing_feed
+    showing_feed = not showing_feed
+    toggle_btn.config(text="Hide Camera" if showing_feed else "Show Camera")
+
 def capture_image(path):
     if current_frame is not None:
         cv2.imwrite(path, current_frame)
 
 def add_user():
-
-    global showing_feed
-    showing_feed = True #enable webcam
-
-
     name = simpledialog.askstring("Input", "Enter user name:")
     if not name:
-        showing_feed = False
         return
 
     user_dir = os.path.join(verification_dir, name)
@@ -70,7 +70,7 @@ def add_user():
         nonlocal step, count
         if event.keysym == "space":  #SPACE pressed
             #Capture burst of images for verification
-            for i in range(7):  #burst of 7 images
+            for i in range(10):  #burst of 10 images
                 img_path = os.path.join(user_dir, f"{instructions[step].replace(' ', '_')}_{i}.jpg")
                 capture_image(img_path)
             count += 1
@@ -81,8 +81,9 @@ def add_user():
             else:
                 root.unbind("<Key>")
                 instruction_label.config(text="Done capturing images")
-                messagebox.showinfo("Success", f"Captured {count*7} images for {name}")
-                showing_feed = False
+                messagebox.showinfo("Success", f"Captured {count*10} images for {name}")
+                #clear the label after 3 seconds
+                root.after(3000, lambda: instruction_label.config(text=""))
 
     step = 0
     count = 0
@@ -90,10 +91,6 @@ def add_user():
     root.bind("<Key>", key_handler)
 
 def verify():
-
-    global showing_feed
-    showing_feed = True
-
 
     input_path = "app_data/input_image/input.jpg"
     os.makedirs(os.path.dirname(input_path), exist_ok=True)
@@ -117,12 +114,13 @@ def verify():
             best_score = score
             best_user = user
 
-    showing_feed = False
-    threshold = 0.5
+   
+    threshold = 0.3
     if best_score > threshold:
         messagebox.showinfo("Result", f"Verified as {best_user} ({best_score*100:.2f}% match)")
     else:
         messagebox.showerror("Result", "Access Denied")
+
 
 # ------------------ GUI ------------------ #
 root = tk.Tk()
@@ -151,6 +149,9 @@ add_btn.pack(pady=10)
 
 verify_btn = tk.Button(root, text="Verify User", command=verify, **btn_style)
 verify_btn.pack(pady=10)
+
+toggle_btn = tk.Button(root, text="Hide Camera", command=toggle_feed, **btn_style)
+toggle_btn.pack(pady=10)
 
 quit_btn = tk.Button(root, text="Quit", command=root.quit, **btn_style)
 quit_btn.pack(pady=10)
