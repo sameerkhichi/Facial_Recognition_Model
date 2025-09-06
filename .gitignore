@@ -7,12 +7,15 @@ __pycache__/
 venv/
 .env/
 .venv/
+VE/
+.VE/
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints
 
 # TensorFlow / Keras checkpoints & weights
 training_checkpoints/
+siamesemodelv2_keras/
 *.ckpt
 *.h5
 *.pb

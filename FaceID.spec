@@ -1,42 +1,31 @@
 # -*- mode: python ; coding: utf-8 -*-
-import os
+
 from PyInstaller.utils.hooks import collect_all
+import tensorflow as tf
 
-# Paths
-project_root = os.path.abspath("Authentication")
-app_script = os.path.join(project_root, "app.py")
-icon_path = os.path.join(project_root, "icon.ico")
-model_path = os.path.join(project_root, "siamesemodelv2.h5")
-model_py = os.path.join(project_root, "model.py")
-data_prep_py = os.path.join(project_root, "data_preprocessing.py")
+# Collect all TensorFlow files
+datas_tf, binaries_tf, hiddenimports_tf = collect_all('tensorflow')
 
-# Collect TensorFlow dependencies
-datas, binaries, hiddenimports = collect_all('tensorflow')
-
-# Include model and helper files
-datas += [
-    (model_path, '.'),            # siamesemodelv2.h5
-    (model_py, '.'),              # model.py
-    (data_prep_py, '.'),          # data_preprocessing.py
-]
-
-# ---------------- ANALYSIS ---------------- #
 a = Analysis(
-    [app_script],
-    pathex=[project_root],
-    binaries=binaries,
-    datas=datas,
-    hiddenimports=hiddenimports,
+    ['Authentication/app.py'],
+    pathex=[],
+    binaries=binaries_tf,  # Include TensorFlow DLLs
+    datas=[
+        ('Authentication/siamesemodelv2_keras', 'siamesemodelv2_keras'),
+        ('Authentication/model.py', '.'),
+        ('Authentication/util.py', '.'),
+    ] + datas_tf,  # Include TensorFlow data files
+    hiddenimports=hiddenimports_tf,
     hookspath=[],
+    hooksconfig={},
     runtime_hooks=[],
     excludes=[],
     noarchive=False,
+    optimize=0,
 )
 
-# ---------------- PYZ ---------------- #
 pyz = PYZ(a.pure)
 
-# ---------------- EXECUTABLE ---------------- #
 exe = EXE(
     pyz,
     a.scripts,
@@ -49,11 +38,10 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,
-    icon=icon_path,
+    console=True, #console included for process monitoring  
+    icon='Authentication/icon.ico',  
 )
 
-# ---------------- COLLECT ---------------- #
 coll = COLLECT(
     exe,
     a.binaries,
@@ -62,5 +50,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='FaceID'
+    name='FaceID',
 )

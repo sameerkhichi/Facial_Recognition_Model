@@ -2,12 +2,13 @@ import cv2
 import sys
 import os
 import tkinter as tk
+from tkinter import ttk
 from tkinter import simpledialog, messagebox
 from PIL import Image, ImageTk
 import tensorflow as tf
 import numpy as np
 from model import L1Dist
-from data_preprocessing import preprocess
+from util import preprocess
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -19,7 +20,8 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 # Load Siamese model
-model_path = resource_path("siamesemodelv2.h5")
+#model_path = resource_path("siamesemodelv2.h5")
+model_path = resource_path("siamesemodelv2_keras")
 model = tf.keras.models.load_model(
     model_path,
     custom_objects={"L1Dist": L1Dist, "BinaryCrossentropy": tf.losses.BinaryCrossentropy}
@@ -101,6 +103,26 @@ def add_user():
     instruction_label.config(text=f"{instructions[step]}")
     root.bind("<Key>", key_handler)
 
+#popup instead of messagebox which will fail with no console
+def show_result_popup(message, title="Result"):
+    """Creates a small popup window to display verification results."""
+    popup = tk.Toplevel(root)
+    popup.title(title)
+    popup.configure(bg="#1e1e1e")
+    popup.geometry("400x150")
+
+    label = tk.Label(popup, text=message, font=("Helvetica", 16), fg="white", bg="#1e1e1e", wraplength=350)
+    label.pack(pady=20)
+
+    ok_btn = tk.Button(popup, text="OK", font=("Helvetica", 14), width=10, height=1, bg="#333", fg="white",
+                       command=popup.destroy)
+    ok_btn.pack(pady=10)
+
+    # Make sure the popup appears above the main window
+    popup.transient(root)
+    popup.grab_set()
+    root.wait_window(popup)
+
 def verify():
 
     input_path = "app_data/input_image/input.jpg"
@@ -109,10 +131,24 @@ def verify():
 
     input_img = preprocess(input_path)
 
+    users = os.listdir(verification_dir)
+    total_steps = sum(len(os.listdir(os.path.join(verification_dir, user))) for user in users)
+    
+    #Create a popup window for the progress bar
+    progress_win = tk.Toplevel(root)
+    progress_win.title("Verifying User...")
+    progress_win.geometry("400x100")
+    progress_win.configure(bg="#1e1e1e")
+    progress_label = tk.Label(progress_win, text="Starting verification...", font=("Helvetica", 14), fg="white", bg="#1e1e1e")
+    progress_label.pack(pady=10)
+    progress_bar = ttk.Progressbar(progress_win, orient="horizontal", length=350, mode="determinate", maximum=total_steps)
+    progress_bar.pack(pady=10)
+    
     best_score = 0
     best_user = None
+    step_count = 0
 
-    for user in os.listdir(verification_dir):
+    for user in users:
         user_dir = os.path.join(verification_dir, user)
         results = []
         for file in os.listdir(user_dir):
@@ -120,17 +156,29 @@ def verify():
             result = model.predict([np.expand_dims(input_img, axis=0), np.expand_dims(verification_img, axis=0)])
             results.append(result)
 
+            # Update progress
+            step_count += 1
+            progress_bar['value'] = step_count
+            progress_label.config(text=f"Verifying: {step_count}/{total_steps}")
+            progress_win.update_idletasks()
+
         score = np.mean(results)
         if score > best_score:
             best_score = score
             best_user = user
 
+    progress_label.config(text="Verification Complete")
+    progress_bar['value'] = total_steps
+    progress_win.update_idletasks()
+
+    #Close progress popup after a short delay
+    progress_win.after(500, progress_win.destroy)
    
     threshold = 0.3
     if best_score > threshold:
-        messagebox.showinfo("Result", f"Verified as {best_user} ({best_score*100:.2f}% match)")
+        show_result_popup(f"Verified as {best_user} ({best_score*100:.2f}% match)")
     else:
-        messagebox.showerror("Result", "Access Denied")
+        show_result_popup("Access Denied")
 
 
 # ------------------ GUI ------------------ #
