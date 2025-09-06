@@ -15,6 +15,6 @@ It allows you to compare a live webcam feed against a set of stored images to ve
 
 To download the application visit: https://github.com/sameerkhichi/Facial_Recognition_Model/releases/tag/v1.0.0
 
-Click the FaceID.zip file to start the download
-Unzip the folder and double-click on the FaceID application
-Note that console was left on to view progress and background work, so the command prompt will open with the app.
+- Click the FaceID.zip file to start the download
+- Unzip the folder and double-click on the FaceID application
+- Note that console was left on to view progress and background work, so the command prompt will open with the app.
