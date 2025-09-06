@@ -17,4 +17,6 @@ To download the application visit: https://github.com/sameerkhichi/Facial_Recogn
 
 - Click the FaceID.zip file to start the download
 - Unzip the folder and double-click on the FaceID application
+- A warning will pop up, and this is due to the lack of purchase of a license. Click 'more info' and run anyway.
+- The first start-up will take a few moments, so please be patient. The app will start within 20 seconds of launching it
 - Note that console was left on to view progress and background work, so the command prompt will open with the app.
